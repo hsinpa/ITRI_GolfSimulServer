@@ -1,14 +1,20 @@
 import Fastify from 'fastify'
+import Models from './Model/Models';
+import Routes from './Router/Routes';
+
+const dotenv = require('dotenv');
+dotenv.config();
+
+const env = process.env;
 
 const fastify = Fastify({
   logger: false
 })
 
-fastify.get('/', function (request, reply) {
-    reply.send({ hello: 'world' })
-  })
+const models = new Models(env);
+const routes = new Routes(fastify, models);
   
-  // Run the server!
+// Run the server!
 fastify.listen({ port: 3010 }, function (err, address) {
 if (err) {
     fastify.log.error(err)
