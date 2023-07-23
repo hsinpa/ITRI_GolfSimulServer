@@ -1,5 +1,7 @@
 import { FastifyInstance } from "fastify";
 import Models from "../Model/Models";
+import {send_email} from "../Utility/EmailUtility";
+import set_user_routes from "./UserRoutes";
 
 export default class Routes {
 
@@ -11,25 +13,18 @@ export default class Routes {
         this._models = models;
 
         this.set_general_routes();
-        this.set_user_routes();
+        set_user_routes(fastify, models);
     }
 
     private set_general_routes() {
         this._fastify.get('/', function (request, reply) {
             reply.send({ hello: 'world' })
         });
-    }
 
-    private set_user_routes() {
-        let self = this;
-        this._fastify.post('/account_register', async function (request: any, reply) {
+        this._fastify.get('/test_email', function (request, reply) {
+            send_email("Hell oworld", "No thing ehrere", "hsinpa@gmail.com");
 
-            let r = await self._models.UserModel.account_register(
-               request.body["email"] as string, request.body["password"], request.body["name"], parseInt(request.body["gender"])
-            );
-
-            reply.send({ status: r });
+            reply.send({ hello: 'world' });
         });
     }
-
 } 
