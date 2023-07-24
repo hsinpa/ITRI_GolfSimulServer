@@ -28,6 +28,8 @@ export default class UserModel {
     }
 
     async check_account(id:string, token: string) : Promise<boolean> {
+        if (id == "" || token == "") return false;
+        
         let query = `SELECT COUNT(*) as count 
                     FROM ${Table}
                     WHERE id=? AND token=?`;
@@ -38,8 +40,6 @@ export default class UserModel {
 
     async account_register(email: string, password: string, name: string, gender: number) : Promise<boolean> {
         let isAccountValid = await this.ValidAccount(Table, "email", email);
-
-        console.log("isAccountValid " + isAccountValid);
 
         let id = GenerateRandomString(12);
         let hashPassword = SHA256Hash(password+RANDOMKey);
@@ -55,6 +55,8 @@ export default class UserModel {
     }
 
     async account_login(email: string, password : string): Promise<AccountStruct> {
+        if (email == "") return null;
+
         let hashPassword = SHA256Hash(password + RANDOMKey);
 
         let q = `SELECT id, email, name
@@ -87,6 +89,8 @@ export default class UserModel {
     }
 
     async change_password(email: string, past_password: string, new_password: string) : Promise<boolean> {
+        if (email == "" || past_password == "" || new_password == "") return false;
+
         let query = `SELECT id 
                     FROM ${Table}
                     WHERE email=? AND password=?`;
@@ -113,6 +117,8 @@ export default class UserModel {
     }
 
     async forget_password(email: string) : Promise<boolean> {
+        if (email == "") return false;
+
         let first_pass_query = `SELECT is_forget_password_mail_send, name
                     FROM ${Table}
                     WHERE email=?`;

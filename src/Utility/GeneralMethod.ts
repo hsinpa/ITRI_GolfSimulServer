@@ -23,3 +23,17 @@ export function SHA256Hash(p_input : string) {
 
   return hash
 }
+
+export function SafeJSONOps<T>(jsonobject: any, key: string, fallback: T) : T {
+  if (jsonobject == null) return fallback;
+
+  try {
+    if (jsonobject.hasOwnProperty(key)) {
+      return jsonobject[key];
+    }
+  } catch {
+    console.log("SafeJSONOps Failed " + jsonobject +", key " + key);
+  }
+
+  return fallback;
+}
