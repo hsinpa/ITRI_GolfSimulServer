@@ -15,7 +15,7 @@ const models = new Models(env);
 const routes = new Routes(fastify, models);
   
 // Run the server!
-fastify.listen({ port: 3010 }, function (err, address) {
+fastify.listen({ port: 8025 }, function (err, address) {
 if (err) {
     fastify.log.error(err)
     process.exit(1)
