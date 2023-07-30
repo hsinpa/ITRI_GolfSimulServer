@@ -1,18 +1,20 @@
-export const TeacherSocketEvent = {
-    CreateRoom : "event@create_room",
-    StartGame : "event@start_game",
-    ForceEndGame : "event@force_end_game",
-    KickFromGame : "event@kick_from_game",
-    RefreshUserStatus : "event@refresh_user_status",
-    Rally : "event@rally"
-}
 
 export const UniversalSocketEvent = {
-    UpdateUserInfo : "event@update_userInfo", // Can be used as Login
-    UserJoined : "event@user_joined",
-    UserLeaved : "event@user_leave",
-    Reconnect : "event@reconnect",
-    Disconnect : "event@disconnect"
+    UserRegister: "server_input@user_register",
+    CheckRegister: "server_input@check_register",
 
+    RoomJoined : "server_input@room_join",
+    RoomLeaved : "server_input@room_leave",
+    RoomCreate : "server_input@room_create",
 }
 
+export const UniversalSocketReplyEvent = {
+    UserRegister: "server_output@user_register",
+    CheckRegister: "server_output@check_register",
+
+    NewUserJoined : "server_output@new_user_joined",
+
+    RoomJoined : "server_output@room_join",
+    RoomLeaved : "server_output@room_leave",
+    RoomCreate : "server_output@room_create",
+}

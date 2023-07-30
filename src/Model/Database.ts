@@ -28,6 +28,7 @@ export default class Database {
             dataResult.status = true;
 
         } catch (err) {
+            console.log(err);
             dataResult.result = err;
         } finally {
             if (pool != null)
