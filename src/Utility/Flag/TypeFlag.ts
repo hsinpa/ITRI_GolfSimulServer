@@ -7,8 +7,12 @@ export const ErrorMessge = Object.freeze({
     Account_Not_Exist : "Account_Not_Exist",
     Parameter_Wrong_Format : "Parameter_Wrong_Format",
     Password_Not_Fit : "Password_Not_Fit",
+    Password_Wrong_Format : "Password_Wrong_Format",
     Email_Not_Match : "Email_Not_Match",
     Forget_Password_Not_Allow : "Forget_Password_Not_Allow",
+
+    UserID_NotExist : "UserID_NotExist",
+    Error : "Unkonwn_Error",
 });
 
 export const ErrorSocketMessge = Object.freeze({

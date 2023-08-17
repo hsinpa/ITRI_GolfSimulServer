@@ -15,7 +15,7 @@ export default class UserModel {
 
     //#region Public API
     async get_account(id:string) : Promise<AccountStruct>{
-        let q = `SELECT id, email, name, type
+        let q = `SELECT id, email, name, type, height, weight, nation
         FROM ${Table}
         WHERE id=?`;
 
@@ -25,6 +25,16 @@ export default class UserModel {
             return {id: json[0]["id"], name: json[0]["name"] };    
         }
         return null;
+    }
+
+    update_account_info(id: string, name: string, height: number, weight: number, nation: string) {
+        let update_query = `
+            UPDATE ${Table}
+            SET name=?, height=?, weight=?, nation=?
+            WHERE id=?       
+        `;
+
+        let r = (this._database.PrepareAndExecuteQuery(update_query, [name, height, weight, nation, id]));
     }
 
     async check_account(id:string, token: string) : Promise<boolean> {

@@ -1,5 +1,11 @@
 
+export const RegularExpression  = Object.freeze({
+    Password: /^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+){6,26}$/g,
+    Email: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g,
+});
+
 export const UniversalSocketEvent = {
+    SelfRegister: "server_input@self_register",
     UserRegister: "server_input@user_register",
     CheckRegister: "server_input@check_register",
 
@@ -9,6 +15,10 @@ export const UniversalSocketEvent = {
 }
 
 export const UniversalSocketReplyEvent = {
+    //API
+    LoginSuccess: "server_output@login_success",
+
+    //Socket
     UserRegister: "server_output@user_register",
     CheckRegister: "server_output@check_register",
 

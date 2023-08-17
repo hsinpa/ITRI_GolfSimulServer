@@ -2,10 +2,12 @@ import * as socket from 'socket.io';
 import SocketEnvironment from './SocketEnvironment';
 import {FastifyInstance} from 'fastify'
 import { SocketGeneralListener } from './SocketGeneralListener';
+import { SocketAPI } from './SocketAPI';
 
 export default class SocketManager {
     private io :socket.Server; 
     public env : SocketEnvironment;
+    public api : SocketAPI;
     private general_listener: SocketGeneralListener;
     
     constructor(app : FastifyInstance) {
@@ -13,6 +15,8 @@ export default class SocketManager {
             // we need to wait for the server to be ready, else `server.io` is undefined
             this.io = app.io;
             this.env = new SocketEnvironment(this.io);
+            this.api = new SocketAPI(this.io, this.env);
+            
             this.general_listener = new SocketGeneralListener(this.env);
             
             this.RegisterBasicListener();

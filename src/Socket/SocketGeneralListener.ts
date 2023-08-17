@@ -13,6 +13,14 @@ export class SocketGeneralListener {
     SetListener(socket :socket.Socket) {
         let self = this;
 
+        socket.on(UniversalSocketEvent.SelfRegister, function (data: string) {
+            let parseData = JSON.parse(data);
+            let device_id : string = parseData["device_id"];
+
+            if (device_id != null && device_id != "")
+                self._env.devices.set(device_id, socket.id);
+        });
+        
         socket.on(UniversalSocketEvent.UserRegister, function (data: string) {
             let parseData = JSON.parse(data);
 

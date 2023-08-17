@@ -2,15 +2,30 @@ import { FastifyInstance, FastifyReply } from "fastify";
 import Models from "../Model/Models";
 import { ErrorMessge } from "../Utility/Flag/TypeFlag";
 import { SafeJSONOps } from "../Utility/GeneralMethod";
+import { RegularExpression } from "../Utility/Flag/EventFlag";
+import {ReplyResult} from './Routes';
+import SocketManager from "../Socket/SocketManager";
 
-export default function set_user_routes(fastify: FastifyInstance, models: Models) {
+export default function set_user_routes(fastify: FastifyInstance, models: Models, sockets: SocketManager) {
 
     fastify.get('/get_account/:id', async function (request: any, reply) {
         const { id } = request.params;
         let r = await models.UserModel.get_account(id);
         
-        reply_result(reply, r, ErrorMessge.Account_Not_Exist);
+        ReplyResult(reply, r, ErrorMessge.Account_Not_Exist);
     });
+
+    fastify.post('/update_account', async function (request: any, reply) {
+        let r = await models.UserModel.update_account_info(
+            SafeJSONOps(request.body, "id", ""), 
+            SafeJSONOps(request.body, "name", ""),
+            SafeJSONOps(request.body, "height", 0),
+            SafeJSONOps(request.body, "weight", 0),
+            SafeJSONOps(request.body, "nation", "")
+        );
+        reply.send({ status: true});
+    });
+
 
     fastify.post('/check_account', async function (request: any, reply) {
         let r = await models.UserModel.check_account(
@@ -21,6 +36,13 @@ export default function set_user_routes(fastify: FastifyInstance, models: Models
     });
 
     fastify.post('/account_register', async function (request: any, reply) {
+
+        let  password = SafeJSONOps(request.body, "password", "");
+        if (!password.match(RegularExpression.Password)) {
+            ReplyResult(reply, false, ErrorMessge.Password_Wrong_Format);
+            return;
+        }
+
         let r = await models.UserModel.account_register(
             SafeJSONOps(request.body, "email", ""), 
             SafeJSONOps(request.body, "password", ""), 
@@ -32,53 +54,65 @@ export default function set_user_routes(fastify: FastifyInstance, models: Models
     });
 
     fastify.post('/account_login', async function (request: any, reply) {
+        let device_id = SafeJSONOps(request.body, "device_id", "")
+
         let r = await models.UserModel.account_login(
             SafeJSONOps(request.body, "email", ""), 
             SafeJSONOps(request.body, "password", "")
         );
 
-        reply_result(reply, r, ErrorMessge.Account_Not_Exist);
+        if (device_id != "" && r != null)
+            sockets.api.SendLoginSuccessEvent(device_id, JSON.stringify(r));
+
+
+        ReplyResult(reply, r, ErrorMessge.Account_Not_Exist);
     });
 
     fastify.post('/social_media_login', async function (request: any, reply) {
+        let device_id = SafeJSONOps(request.body, "device_id", "")
+
         let r = await models.UserModel.social_media_login(
             SafeJSONOps(request.body, "id", ""), 
             SafeJSONOps(request.body, "name", ""),
             SafeJSONOps(request.body, "social_media", "root")
         );
+
+        if (device_id != "" && r != null)
+            sockets.api.SendLoginSuccessEvent(device_id, JSON.stringify(r));
         
-        reply_result(reply, r, ErrorMessge.Account_Not_Exist);
+        ReplyResult(reply, r, ErrorMessge.Account_Not_Exist);
     });
 
     fastify.get('/forget_password/:email', async function (request: any, reply) {
         const { email } = request.params;
-        const re = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
         
-        if (email.match(re)) {
+        if (email.match(RegularExpression.Email)) {
             let r = await models.UserModel.forget_password(email);
             
-            reply_result(reply, (r) ? r : null, ErrorMessge.Forget_Password_Not_Allow);
+            ReplyResult(reply, (r) ? r : null, ErrorMessge.Forget_Password_Not_Allow);
 
             return;
         }
         
-        reply_result(reply, null, ErrorMessge.Email_Not_Match);
+        ReplyResult(reply, null, ErrorMessge.Email_Not_Match);
     });
 
     fastify.post('/change_password', async function (request: any, reply) {
+
+        let new_password = SafeJSONOps(request.body, "new_password", "root")
+
+        if (!new_password.match(RegularExpression.Password)) {
+            ReplyResult(reply, false, ErrorMessge.Password_Wrong_Format);
+            return;
+        }
+
         let r = await models.UserModel.change_password(
             SafeJSONOps(request.body, "email", ""), 
             SafeJSONOps(request.body, "past_password", ""),
-            SafeJSONOps(request.body, "new_password", "root")
+            new_password
             );
 
-        reply_result(reply, (r) ? r : null, ErrorMessge.Password_Not_Fit);
+        ReplyResult(reply, (r) ? r : null, ErrorMessge.Password_Not_Fit);
     });
 }
 
-function reply_result(reply: FastifyReply, result: any, fallback: string) {
-    if (result != null) 
-        reply.send({ status: true, result: result});
-    else 
-        reply.send({ status: false, result: fallback});
-}

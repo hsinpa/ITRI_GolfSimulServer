@@ -16,8 +16,8 @@ const fastify = Fastify({
 fastify.register(fastifyIO);
 
 const models = new Models(env);
-const routes = new Routes(fastify, models);
 const socketManager = new SocketManager(fastify);
+const routes = new Routes(fastify, models, socketManager);
   
 // Run the server!
 fastify.listen({ port: 8025 }, function (err, address) {

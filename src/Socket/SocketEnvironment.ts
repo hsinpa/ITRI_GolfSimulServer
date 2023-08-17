@@ -6,6 +6,8 @@ import { UniversalSocketReplyEvent } from "../Utility/Flag/EventFlag";
 const MAX_PLAYER = 8;
 
 export default class SocketEnvironment {
+    public devices : Map<string, string>; //Device ID => socket id
+
     private _users : Map<string, UserComponentType>;
     private _rooms : Map<string, RoomComponentType>;
     private _sockets : Map<string, SocketComponentType>;
@@ -13,6 +15,7 @@ export default class SocketEnvironment {
 
     constructor(io: Server) {
         this._io = io;
+        this.devices = new Map<string, string>();
         this._sockets = new Map<string, SocketComponentType>();
         this._users = new Map<string, UserComponentType>();
         this._rooms = new Map<string, RoomComponentType>();
