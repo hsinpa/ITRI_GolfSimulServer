@@ -12,6 +12,7 @@ export const UniversalSocketEvent = {
     RoomJoined : "server_input@room_join",
     RoomLeaved : "server_input@room_leave",
     RoomCreate : "server_input@room_create",
+    RoomStart : "server_input@game_start",
 }
 
 export const UniversalSocketReplyEvent = {
@@ -23,6 +24,7 @@ export const UniversalSocketReplyEvent = {
     CheckRegister: "server_output@check_register",
 
     NewUserJoined : "server_output@new_user_joined",
+    RoomStart : "server_output@game_start",
 
     RoomJoined : "server_output@room_join",
     RoomLeaved : "server_output@room_leave",

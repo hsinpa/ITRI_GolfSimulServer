@@ -1,5 +1,5 @@
 import { Socket, Server } from "socket.io";
-import { RoomComponentType, UserComponentType, SocketComponentType } from "../Utility/Flag/TypeFlag";
+import { RoomComponentType, UserComponentType, SocketComponentType, GolfFieldType } from "../Utility/Flag/TypeFlag";
 import { GenerateRandomString } from "../Utility/GeneralMethod";
 import { UniversalSocketReplyEvent } from "../Utility/Flag/EventFlag";
 
@@ -95,13 +95,13 @@ export default class SocketEnvironment {
         this._sockets.set(socket_id, {socket_id: socket_id, user_id: user_id_list, room_id: ""});
     }
 
-    CreateRoom(socket_id: string, map_id: string, users: string[] ) : string {
-        if (users.length > 0) return "";
+    CreateRoom(socket_id: string, mapType: GolfFieldType, users: string[] ) : string {
+        if (users.length <= 0) return "";
         
         let random_id = GenerateRandomString(8);
         let room : RoomComponentType = {
-            map_id: map_id,
-            users: users,
+            map_type: mapType,
+            users: Array.from(users),
             host_id: users[0],
             room_id: random_id,
             in_game: false
@@ -131,6 +131,17 @@ export default class SocketEnvironment {
         return true;
     }
 
+    StartRoom(room_id: string) : boolean {
+        let room = this._rooms.get(room_id);
+        if (room != null) {
+            room.in_game = true;
+            this._rooms.set(room_id, room);
+            return true;
+        }
+
+        return false;
+    }
+
     LeaveRoom(socket_id: string, room_id: string) {
         this.BindToRoom(socket_id, "");
 
@@ -140,10 +151,10 @@ export default class SocketEnvironment {
 
             //If game not start yet
             if (!room.in_game) {
-                socketUser.user_id.forEach(x=> {
-                    let r_index = room.users.findIndex(r_user => x == r_user);
+                for (let i = 0; i < socketUser.user_id.length; i++) {
+                    let r_index = room.users.findIndex(r_user => socketUser.user_id[i] == r_user);
                     room.users.splice(r_index, 1);
-                });
+                }
             }
 
             //Empty room
@@ -172,10 +183,12 @@ export default class SocketEnvironment {
         this._sockets.delete(socket_id);
     }
 
+
     private BindToRoom(socket_id: string, room_id: string) {
         if (this._sockets.has(socket_id)) {
             let s = this._sockets.get(socket_id);
             s.room_id = room_id;
+    
             this._sockets.set(socket_id, s);
         }
     }

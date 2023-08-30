@@ -19,6 +19,7 @@ export default function set_user_routes(fastify: FastifyInstance, models: Models
         let r = await models.UserModel.update_account_info(
             SafeJSONOps(request.body, "id", ""), 
             SafeJSONOps(request.body, "name", ""),
+            SafeJSONOps(request.body, "birthday", ""),
             SafeJSONOps(request.body, "height", 0),
             SafeJSONOps(request.body, "weight", 0),
             SafeJSONOps(request.body, "nation", "")

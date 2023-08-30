@@ -1,5 +1,6 @@
 import * as socket from 'socket.io';
 import SocketEnvironment from './SocketEnvironment';
+import {UniversalSocketReplyEvent} from '../Utility/Flag/EventFlag';
 
 export class SocketAPI {
     private _io: socket.Server;
@@ -14,6 +15,10 @@ export class SocketAPI {
         if (!this._env.devices.has(target_id)) return;
 
         let socket_id = this._env.devices.get(target_id);
-        this._io.to(socket_id).emit(stringify_json);
+        this._io.to(socket_id).emit(UniversalSocketReplyEvent.LoginSuccess, stringify_json);
+    }
+
+    GetLiveRooms() {
+        return this._env.GetRooms();
     }
 }

@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS SelfGolfField (
     flag_position BOOLEAN NOT NULL DEFAULT FALSE,
     wind_speed VARCHAR(150) NOT NULL DEFAULT "Unknown",
     distance_unit VARCHAR(150) NOT NULL DEFAULT "Unknown",
+    birthday VARCHAR(40) NOT NULL DEFAULT "",
     mascot_sound BOOLEAN NOT NULL DEFAULT True,
     auto_ball_supply BOOLEAN NOT NULL DEFAULT True,
     action_detect_platform BOOLEAN NOT NULL DEFAULT True,

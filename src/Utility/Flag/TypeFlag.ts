@@ -17,6 +17,8 @@ export const ErrorMessge = Object.freeze({
 
 export const ErrorSocketMessge = Object.freeze({
     Join_Room_Full : "Join_Room_Full",
+    Room_Not_Exist : "Room_Not_Exist",
+    Room_Wrong_Owner : "Room_Wrong_Owner",
 });
 
 export const UserStatus = Object.freeze({
@@ -38,18 +40,33 @@ export interface UserComponentType {
     user_id : string,
     name : string,
     type : string,
-    connection : boolean,
-
+    connection? : boolean,
     room_id? : string,
 }
 
 export interface RoomComponentType {
     room_id : string,
     host_id : string,
-    map_id: string,
+    map_type: GolfFieldType,
 
     in_game: boolean,
 
     //userID List
     users : string[]
+}
+
+export interface GolfFieldType {
+    "map_id" : string,
+    "ok_radius" : number,
+    "wind_speed" : number,
+    "distance_unit" : string,
+    "hole_count" : number,
+    "max_player" : number,
+
+    "mascot_sound" : boolean,
+    "auto_ball_supply" : boolean,
+    "action_detect_platform" : boolean,
+    "video_replay" : boolean,
+    "flag_position" : boolean,
+    "is_public" : boolean
 }

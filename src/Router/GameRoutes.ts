@@ -4,8 +4,13 @@ import { ErrorMessge } from "../Utility/Flag/TypeFlag";
 import { SafeJSONOps } from "../Utility/GeneralMethod";
 import { RegularExpression } from "../Utility/Flag/EventFlag";
 import {ReplyResult} from './Routes';
+import SocketManager from "../Socket/SocketManager";
 
-export default function set_game_routes(fastify: FastifyInstance, models: Models) {
+export default function set_game_routes(fastify: FastifyInstance, models: Models, sockets: SocketManager) {
+
+    fastify.get('/get_live_rooms', async function (request: any, reply) {
+        ReplyResult(reply, sockets.api.GetLiveRooms(), ErrorMessge.Error);
+    });
 
     fastify.get('/get_game_by_session/:id', async function (request: any, reply) {
         const { id } = request.params;

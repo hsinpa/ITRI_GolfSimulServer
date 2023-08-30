@@ -18,7 +18,7 @@ export default class Routes {
         this.set_general_routes();
         set_user_routes(fastify, models, sockets);
         set_setting_routes(fastify, models);
-        set_game_routes(fastify, models);
+        set_game_routes(fastify, models, sockets);
     }
 
     private set_general_routes() {
