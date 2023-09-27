@@ -18,6 +18,8 @@
     "@types/nodemon": "*"
   },
   "dependencies": {
+    "@fastify/cors": "^8.3.0",
+    "cors": "^2.8.5",
     "csv": "^6.3.1",
     "dotenv": "^16.3.1",
     "fastify": "^4.20.0",

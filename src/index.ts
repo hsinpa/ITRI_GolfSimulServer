@@ -3,6 +3,7 @@ import Models from './Model/Models';
 import Routes from './Router/Routes';
 import fastifyIO from "fastify-socket.io";
 import SocketManager from './Socket/SocketManager';
+import cors from '@fastify/cors'
 
 const dotenv = require('dotenv');
 dotenv.config();
@@ -11,6 +12,10 @@ const env = process.env;
 
 const fastify = Fastify({
   logger: false
+})
+
+fastify.register(cors, { 
+  // put your options here
 })
 
 fastify.register(fastifyIO);

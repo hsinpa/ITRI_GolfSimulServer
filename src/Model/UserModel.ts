@@ -104,19 +104,18 @@ export default class UserModel {
         return {id: id, name: name, token: token };
     }
 
-    async change_password(email: string, past_password: string, new_password: string) : Promise<boolean> {
-        if (email == "" || past_password == "" || new_password == "") return false;
+    async change_password(id: string, past_password: string, new_password: string) : Promise<boolean> {
+        if (id == "" || past_password == "" || new_password == "") return false;
 
         let query = `SELECT id 
                     FROM ${Table}
-                    WHERE email=? AND password=?`;
+                    WHERE id=? AND password=?`;
         let pass_hashPassword = SHA256Hash(past_password+RANDOMKey);
 
-        let r = await(this._database.PrepareAndExecuteQuery(query, [email, pass_hashPassword]));
+        let r = await(this._database.PrepareAndExecuteQuery(query, [id, pass_hashPassword]));
 
         let q_json = JSON.parse(r.result);
         if (q_json.length > 0) {
-            let id = q_json[0]["id"];
             let token = await this.RenewToken(id);
             let hashPassword = SHA256Hash(new_password+RANDOMKey);
 

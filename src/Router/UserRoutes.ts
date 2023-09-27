@@ -108,7 +108,7 @@ export default function set_user_routes(fastify: FastifyInstance, models: Models
         }
 
         let r = await models.UserModel.change_password(
-            SafeJSONOps(request.body, "email", ""), 
+            SafeJSONOps(request.body, "id", ""), 
             SafeJSONOps(request.body, "past_password", ""),
             new_password
             );

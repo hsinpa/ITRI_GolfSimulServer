@@ -22,8 +22,8 @@ export default class Routes {
     }
 
     private set_general_routes() {
-        this._fastify.get('/', function (request, reply) {
-            reply.send({ hello: 'world' })
+        this._fastify.get('/', async function (request, reply) {          
+            reply.send({ hello: "movies" })
         });
 
         this._fastify.get('/test_email', function (request, reply) {
