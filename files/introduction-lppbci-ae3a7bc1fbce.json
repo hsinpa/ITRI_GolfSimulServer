@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "introduction-lppbci",
+  "private_key_id": "ae3a7bc1fbce84883c2c7856ae880c6c111e16cb",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQDPmB7yOpLrWVzB\n39uQuXMt1VDwtKaeUkLxKw3vHLWBOiiu9FaTDtnS6dvZP3KkWPYN8ppzQFtEnn69\nSDoj/C0m3ZqrRWZfFTOQookHeqQc8d2WW7XJrc6ya+ifc4nIYLSd8kLn7MWd2AT5\nllPu+czLscqwcm25LrWu6JYVs1zywbodrQuRvw/KzHzvmQFYYZwsFhe0U3D8Qr9T\ndhTWRTFUqb4Gd0sTen95ExK4YFhIJPT8xQz3pIgLrAgel+Wc48/AJ5cCnl1UhgzN\nBoCI/JqpE8VKYV+ETHYdRwlc3GFz8LAWzR0cs1xpKUxlcN0H9koBVf8eTxuQfY/m\nWFes46YlAgMBAAECggEAES9ZXnmJWIjDBDylFze26HQoeWinA2OxbXgANQtmHh7D\np+oLsaxQzWQ1Iiids6u2oMR00zYgaA+L090DDSAO19EQAP4jgZsGdAJ0gAU/yTKf\ngpcwdxPXkM8ciHiezxLsWMfpkHv6Bv1POh8e7yFIOhOLgSxT13jdqu9Pn1fECcdn\n6+h6xI3BAdx0rCgi+LPo13t43nDuKf60S4WyTIfaCjeITfr4CJ0JgdOYao/GyRVy\nlJho67ZWsq4fHaxBXa+oVnFdXcuyZUVD5wV1qQJkF6V9N6v2ahoMKEEb9x7boEf6\nfIQ/Ix1WiitidmVnaOuQGOFVoiKpHMGj+zVEcUfIEQKBgQD9QSI1ZeHXaiUN0nFT\njbPUa+ArLZT3nztz6HAEc9tVEDpZbOyvhT1y+Xcg53gCKQvgbi7jQIw6YtHRTVQw\nW9sD52+HzBTkmE6ZdBMOSBwwRkR9IsMG8UG7ijNWzdx7bZDTo6Hchupdmw/t5Dy8\nh8/YjExP2Rvz0FatmDw6XsyFkQKBgQDR2EPJ47DiqEkJCymJZQtNZpCHkAOP9SQo\nwq9wAm2z613ftZ3P3rxaX/cxPUxbIT7qlRNBGi/LeGx3o16gUVMRLso2NJBgHffb\ntgiKwbGvH5+qP5rBd6/q3iN1lRtZfwOoSP8gGoLJM1eFCwTU1UbA5ha4J5aK4dHL\niGi9Gcv9VQKBgQCzU5mrgfcHF+wg+3Cvn1lFAxX6vQ4MwT3R9zbKkFcwxorqo4x9\nRLWcYjUOoZiCvxnf02V0GVKyTSMRN9ZzX7eX7hs1ZzcsHwUY9+4+YKVFMZxxl1nN\n4quO5m8v+hkzdQPmOKn2g7oUiiYfZ0vym6B7T+0BZVS7sjyOM4wCMPpVYQKBgQDG\nZDhyvxmUsJWcPzld9HHjE3zBLZ6wk4tEHgvPUfx1haiSwBobVPGuX9xMaS+vWJcr\nIRW7Dw7wx0GFOqdT2o82R45WAQweUzbqOgeJZ+adMsC5LLkbABUJcEsF95qL2lGS\n4LCToXzUy/2KgwhmT908skv4fzUMyMKYMrcTUThSoQKBgQDfl5tJL1lS1pbb7Ryv\nP3fVueSxOVqKgOqeMfOmSHM5wKTfNWxberkLyxrp4HCabwSpkDJZ2WWGcdOf30Fc\nWpI89SyVgfVdTXwiqWgF+jgqeOEYBbYaPGDFnLs7zdhASppRQCpWB7tywA+R0uJq\nFVUb2OiPLLNXBJTm53YeYo8IGg==\n-----END PRIVATE KEY-----\n",
+  "client_email": "golf-bucket@introduction-lppbci.iam.gserviceaccount.com",
+  "client_id": "112429743923106752001",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/golf-bucket%40introduction-lppbci.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

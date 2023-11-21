@@ -4,6 +4,8 @@ import Routes from './Router/Routes';
 import fastifyIO from "fastify-socket.io";
 import SocketManager from './Socket/SocketManager';
 import cors from '@fastify/cors'
+import multipart from '@fastify/multipart'
+
 
 const dotenv = require('dotenv');
 dotenv.config();
@@ -18,7 +20,25 @@ fastify.register(cors, {
   // put your options here
 })
 
-fastify.register(fastifyIO);
+fastify.register(fastifyIO, 
+  {
+    cors: {
+      origin: "*",
+      methods: ["GET", "POST"]
+    }
+  });
+
+fastify.register(multipart, {limits: {
+  fileSize: 10000000
+}});
+
+fastify.addContentTypeParser('*', function (req:any, done: any) {
+  var data = ''
+  req.on('data', (chunk: any) => { data += chunk })
+  req.on('end', () => {
+    done(null, data)
+  })
+});
 
 const models = new Models(env);
 const socketManager = new SocketManager(fastify);

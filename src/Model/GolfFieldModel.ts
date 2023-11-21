@@ -14,15 +14,16 @@ export default class GolfFieldModel {
     constructor(database : Database) {
         this._database = database;
     }
+
 //#region Golf Field
-    async get_golf_field(id: string) {
+    async get_golf_field(id: string, mode:string)  {
         let q = `SELECT ${Table}.id as id, map_id, ok_radius, wind_speed, distance_unit, hole_count,
                 mascot_sound, auto_ball_supply, action_detect_platform, video_replay, flag_position
         FROM ${Table}
         LEFT JOIN ${MappingTable} ON ${MappingTable}.golf_field_id=${Table}.id
-        WHERE ${MappingTable}.user_id=?`;
+        WHERE ${MappingTable}.user_id=? AND ${Table}.mode=? `;
 
-        let r = await (this._database.PrepareAndExecuteQuery(q, [id]));
+        let r = await (this._database.PrepareAndExecuteQuery(q, [id, mode]));
 
         if (r.status)
             return JSON.parse(r.result);
@@ -31,13 +32,15 @@ export default class GolfFieldModel {
     }
 
     async insert_golf_field(user_id: string, map_id: string, ok_radius: number, wind_speed: number, distance_unit: string, hole_count: number,
-        mascot_sound: boolean, auto_ball_supply: boolean, action_detect_platform: boolean, video_replay: boolean, flag_position: boolean) : Promise<string> {
+        mascot_sound: boolean, auto_ball_supply: boolean, action_detect_platform: boolean, video_replay: boolean, flag_position: boolean,
+        mode: string) : Promise<string> {
 
         let create_field_query = `INSERT INTO ${Table} (map_id, ok_radius, wind_speed, distance_unit, hole_count,
-            mascot_sound, auto_ball_supply, action_detect_platform, video_replay, flag_position) VALUES(?,?,?,?,?, ?,?,?,?,?)`;
+            mascot_sound, auto_ball_supply, action_detect_platform, video_replay, flag_position, mode) VALUES(?,?,?,?,?, ?,?,?,?,?, ?)`;
 
         let create_field_r = await (this._database.PrepareAndExecuteQuery(create_field_query,
-            [map_id, ok_radius, wind_speed, distance_unit, hole_count, mascot_sound, auto_ball_supply, action_detect_platform, video_replay, flag_position]));
+            [map_id, ok_radius, wind_speed, distance_unit, hole_count, mascot_sound, auto_ball_supply, action_detect_platform, video_replay, flag_position,
+            mode]));
 
         if (create_field_r.status == true) {            
             let insert_id: number = JSON.parse(create_field_r.result).insertId;
@@ -56,16 +59,17 @@ export default class GolfFieldModel {
     }
 
     async update_golf_field(id: string, map_id: string, ok_radius: number, wind_speed: number, distance_unit: string, hole_count: number,
-        mascot_sound: boolean, auto_ball_supply: boolean, action_detect_platform: boolean, video_replay: boolean, flag_position: boolean) {
+        mascot_sound: boolean, auto_ball_supply: boolean, action_detect_platform: boolean, video_replay: boolean, flag_position: boolean,
+        mode: string) {
         let update_query = `
             UPDATE ${Table}
             SET map_id=?,ok_radius=?, wind_speed=?, distance_unit=?, hole_count=?,
-                mascot_sound=?,auto_ball_supply=?,action_detect_platform=?,video_replay=?,flag_position=?
+                mascot_sound=?,auto_ball_supply=?,action_detect_platform=?,video_replay=?,flag_position=?, mode=?
             WHERE id=?       
         `;
 
         let r = await (this._database.PrepareAndExecuteQuery(update_query, 
-            [map_id, ok_radius, wind_speed, distance_unit, hole_count, mascot_sound, auto_ball_supply, action_detect_platform, video_replay, flag_position, id]));
+            [map_id, ok_radius, wind_speed, distance_unit, hole_count, mascot_sound, auto_ball_supply, action_detect_platform, video_replay, flag_position, mode, id]));
     }
 
     async delete_golf_field(id: number) {

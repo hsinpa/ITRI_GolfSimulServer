@@ -15,7 +15,7 @@ export default class UserModel {
 
     //#region Public API
     async get_account(id:string) : Promise<AccountStruct>{
-        let q = `SELECT id, email, name,  height, weight, nation, birthday
+        let q = `SELECT id, email, name,  height, weight, nation, birthday, avatar_url, profile_picture_num
         FROM ${Table}
         WHERE id=?`;
 
@@ -27,20 +27,33 @@ export default class UserModel {
                     height: json[0]["height"],
                     weight: json[0]["weight"],
                     birthday: json[0]["birthday"],
-                    nation: json[0]["nation"]
-                };    
+                    nation: json[0]["nation"],
+                    email: json[0]["email"],
+                    avatar_url: json[0]["avatar_url"],
+                    profile_picture_num: json[0]["profile_picture_num"],
+                }; 
         }
         return null;
     }
 
-    update_account_info(id: string, name: string, birthday: string, height: number, weight: number, nation: string) {
+    update_account_info(id: string, name: string, birthday: string, height: number, weight: number, nation: string, profile_id: number) {
         let update_query = `
             UPDATE ${Table}
-            SET name=?, birthday=?, height=?, weight=?, nation=?
+            SET name=?, birthday=?, height=?, weight=?, nation=?, profile_picture_num = ?
             WHERE id=?       
         `;
 
-        let r = (this._database.PrepareAndExecuteQuery(update_query, [name, birthday, height, weight, nation, id]));
+        let r = (this._database.PrepareAndExecuteQuery(update_query, [name, birthday, height, weight, nation, profile_id, id]));
+    }
+
+    async update_account_fbx(user_id: string, fbx_url: string) {
+        let update_query = `
+            UPDATE ${Table}
+            SET avatar_url=?
+            WHERE id=?       
+        `;
+
+        await this._database.PrepareAndExecuteQuery(update_query, [fbx_url, user_id]);
     }
 
     async check_account(id:string, token: string) : Promise<boolean> {
@@ -182,5 +195,14 @@ export default class UserModel {
 
         let r = await(this._database.PrepareAndExecuteQuery(query, [target_value]));
         return JSON.parse(r.result)[0]['count'] > 0;
+    }
+
+    async GetAllAvatarURL() {
+        let query = `SELECT avatar_url 
+                    FROM ${Table}
+                    WHERE avatar_url IS NOT NULL`;
+
+        let r = await(this._database.PrepareAndExecuteQuery(query));
+        return JSON.parse(r.result);
     }
 }

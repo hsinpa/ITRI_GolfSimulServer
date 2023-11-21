@@ -10,7 +10,8 @@ CREATE TABLE IF NOT EXISTS Account (
     height FLOAT(8) NOT NULL DEFAULT 0,
     weight FLOAT(8) NOT NULL DEFAULT 0,
     nation VARCHAR(150) NOT NULL DEFAULT "Unknown",
-
+    avatar_url VARCHAR(500) NOT NULL DEFAULT "",
+    profile_picture_num INT(12) NOT NULL DEFAULT 0,
     create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     UNIQUE (email)
@@ -53,7 +54,31 @@ CREATE TABLE IF NOT EXISTS Game (
     session_id VARCHAR(120) NOT NULL DEFAULT "",
     user_id VARCHAR(200) NOT NULL DEFAULT "",
     map_id VARCHAR(100) NOT NULL DEFAULT "",
-    score TEXT NOT NULL,
-    retrospect_video_id varchar(250) NOT NULL DEFAULT '',
+    mode_type VARCHAR(100) NOT NULL DEFAULT "watch_mode",
+    par_score TEXT NOT NULL,
+    player_count INT(11) Default 1,
+    hole_count INT(11) Default 1,
+    timestamp VARCHAR(150) NOT NULL DEFAULT "",
     create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+
+
+CREATE TABLE IF NOT EXISTS GolfFieldScreenshotMap (
+	id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    user_id VARCHAR(200) NOT NULL DEFAULT "",
+    golf_field_id int NOT NULL DEFAULT 1,
+    image_url VARCHAR(500) NOT NULL DEFAULT "",
+    FOREIGN KEY (user_id)  REFERENCES Account(id),
+    FOREIGN KEY (golf_field_id)  REFERENCES SelfGolfField(id),
+    create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP    
+) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+
+
+CREATE TABLE IF NOT EXISTS MiniGolfScore(
+	id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    user_id VARCHAR(500) NOT NULL DEFAULT "",
+    terrain_id VARCHAR(500) NOT NULL DEFAULT "",
+    score int NOT NULL DEFAULT 0,
+    FOREIGN KEY (user_id)  REFERENCES Account(id),
+    create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP    
 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci;

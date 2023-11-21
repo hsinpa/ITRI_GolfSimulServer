@@ -7,11 +7,10 @@ import {ReplyResult} from './Routes';
 
 export default function set_setting_routes(fastify: FastifyInstance, models: Models) {
 
-    fastify.get('/self_golf_field/:id', async function (request: any, reply) {
-        const { id } = request.params;
+    fastify.get('/self_golf_field/:mode/:id', async function (request: any, reply) {
+        const { mode, id } = request.params;
 
-        let r = await models.GolfFieldModel.get_golf_field(id);
-
+        let r = await models.GolfFieldModel.get_golf_field(id, mode);
         ReplyResult(reply, r, ErrorMessge.Error);
     });
 
@@ -29,6 +28,8 @@ export default function set_setting_routes(fastify: FastifyInstance, models: Mod
             SafeJSONOps(request.body, "action_detect_platform", false),
             SafeJSONOps(request.body, "video_replay", false),
             SafeJSONOps(request.body, "flag_position", false),
+
+            SafeJSONOps(request.body, "mode", ""),
         );
 
         ReplyResult(reply, r, ErrorMessge.UserID_NotExist);
@@ -48,6 +49,7 @@ export default function set_setting_routes(fastify: FastifyInstance, models: Mod
             SafeJSONOps(request.body, "action_detect_platform", false),
             SafeJSONOps(request.body, "video_replay", false),
             SafeJSONOps(request.body, "flag_position", false),
+            SafeJSONOps(request.body, "mode", ""),
         );
 
         reply.send({ status: true});

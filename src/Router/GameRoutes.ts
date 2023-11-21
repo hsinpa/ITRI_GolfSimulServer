@@ -20,10 +20,10 @@ export default function set_game_routes(fastify: FastifyInstance, models: Models
         ReplyResult(reply, r, ErrorMessge.Error);
     });
 
-    fastify.get('/get_game_by_user/:id', async function (request: any, reply) {
-        const { id } = request.params;
+    fastify.get('/get_game_by_user/:mode/:id', async function (request: any, reply) {
+        const { mode , id } = request.params;
 
-        let r = await models.GameModel.GetGameByUserID(id);
+        let r = await models.GameModel.GetGameByUserIDAndMode(id, mode);
 
         ReplyResult(reply, r, ErrorMessge.Error);
     });
@@ -33,17 +33,11 @@ export default function set_game_routes(fastify: FastifyInstance, models: Models
             SafeJSONOps(request.body, "session_id", ""), 
             SafeJSONOps(request.body, "map_id", ""),
             SafeJSONOps(request.body, "user_id", ""),
-            SafeJSONOps(request.body, "score", [])
-        );
-
-        ReplyResult(reply, true, ErrorMessge.Error);
-    });
-
-    fastify.post('/game/update_video_id', async function (request: any, reply) {
-        let r = await models.GameModel.UpdateVideoID(
-            SafeJSONOps(request.body, "session_id", ""), 
-            SafeJSONOps(request.body, "user_id", ""),
-            SafeJSONOps(request.body, "video_id", "")
+            SafeJSONOps(request.body, "par_score", []),
+            SafeJSONOps(request.body, "player_count", 0), 
+            SafeJSONOps(request.body, "hole_count", 0),
+            SafeJSONOps(request.body, "mode_type", "watch_mode"),
+            SafeJSONOps(request.body, "timestamp", ""),
         );
 
         ReplyResult(reply, true, ErrorMessge.Error);

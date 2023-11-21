@@ -34,7 +34,7 @@ export class SocketGeneralListener {
             if (is_valid) self._env.RegisterUser(socket.id, users);
 
 
-            socket.emit(UniversalSocketReplyEvent.UserRegister,JSON.stringify( {status: is_valid, result: duplicate_users}) );
+            socket.emit(UniversalSocketReplyEvent.UserRegister, JSON.stringify( {status: is_valid, result: duplicate_users}) );
         });
 
         socket.on(UniversalSocketEvent.RoomCreate, function (data: string) {
@@ -50,7 +50,9 @@ export class SocketGeneralListener {
             console.log(`${socketComp.socket_id} RoomCreate -> ${room_id}`);
             socket.join(room_id);
 
-            socket.emit(UniversalSocketReplyEvent.RoomCreate, JSON.stringify({status: true, result: room_id}) );
+            let emit_data = JSON.stringify({status: true, result: room_id});
+            socket.emit(UniversalSocketReplyEvent.RoomCreate, emit_data);
+            socket.to(room_id).emit(UniversalSocketReplyEvent.RoomCreate, emit_data );
         });
 
         socket.on(UniversalSocketEvent.RoomJoined, function (data: string) {
@@ -77,7 +79,7 @@ export class SocketGeneralListener {
             socket.join(room_id);
         });
 
-        socket.on(UniversalSocketEvent.RoomStart, function () {
+        socket.on(UniversalSocketEvent.GameStart, function () {
             let socketComp = self._env.GetSocketComp(socket.id);
             let room_id : string = socketComp.room_id;
 
@@ -102,12 +104,26 @@ export class SocketGeneralListener {
             socket.emit(UniversalSocketReplyEvent.RoomStart);
         });
 
+        socket.on(UniversalSocketEvent.GameEnd, function () {
+            let end_room_success = self._env.EndRoom(socket.id);
+
+        });
+
         socket.on(UniversalSocketEvent.RoomLeaved, function () {
             let socketComp = self._env.GetSocketComp(socket.id);
             if (socketComp == null || socketComp.room_id == null) return;
 
             self._env.LeaveRoom(socket.id, socketComp.room_id);
         });
-    }
 
+        socket.on(UniversalSocketEvent.RoomKickUser, function (data: string) {
+            let socketComp = self._env.GetSocketComp(socket.id);
+            if (socketComp == null || socketComp.room_id == null) return;
+
+            let parseData = JSON.parse(data);
+            let user_id : string = parseData["user_id"];
+
+            self._env.LeaveRoom(socket.id, socketComp.room_id);
+        });
+    }
 }

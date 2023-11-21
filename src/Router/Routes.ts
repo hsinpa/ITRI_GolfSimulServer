@@ -5,6 +5,8 @@ import set_user_routes from "./UserRoutes";
 import set_setting_routes from "./SettingRoutes";
 import set_game_routes from "./GameRoutes";
 import SocketManager from "../Socket/SocketManager";
+import set_io_routes from "./IORoutes";
+import set_mini_golf_routes from "./MiniGolfRoutes";
 
 export default class Routes {
 
@@ -19,6 +21,8 @@ export default class Routes {
         set_user_routes(fastify, models, sockets);
         set_setting_routes(fastify, models);
         set_game_routes(fastify, models, sockets);
+        set_io_routes(fastify, models);
+        set_mini_golf_routes(fastify, models);
     }
 
     private set_general_routes() {

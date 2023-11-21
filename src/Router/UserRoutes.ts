@@ -22,7 +22,8 @@ export default function set_user_routes(fastify: FastifyInstance, models: Models
             SafeJSONOps(request.body, "birthday", ""),
             SafeJSONOps(request.body, "height", 0),
             SafeJSONOps(request.body, "weight", 0),
-            SafeJSONOps(request.body, "nation", "")
+            SafeJSONOps(request.body, "nation", ""),
+            SafeJSONOps(request.body, "profile_picture_num", 0)
         );
         reply.send({ status: true});
     });
@@ -114,6 +115,13 @@ export default function set_user_routes(fastify: FastifyInstance, models: Models
             );
 
         ReplyResult(reply, (r) ? r : null, ErrorMessge.Password_Not_Fit);
+    });
+
+    fastify.get('/get_all_avatar', async function (request: any, reply) {
+        let url_array = await models.UserModel.GetAllAvatarURL();
+        let filter_array = url_array.map((x :any) => x["avatar_url"]);
+
+        ReplyResult(reply, filter_array, ErrorMessge.Error);
     });
 }
 

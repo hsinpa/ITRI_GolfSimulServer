@@ -142,12 +142,28 @@ export default class SocketEnvironment {
         return false;
     }
 
+    EndRoom(socket_id:string) : boolean {
+        let socketComp = this._sockets.get(socket_id);
+        let room = this._rooms.get(socketComp.room_id);
+
+        if (room != null && room.host_id == socketComp.user_id[0]) {
+            room.in_game = false;
+            this._rooms.set(room.room_id, room);
+
+            this._io.to(room.room_id).emit(UniversalSocketReplyEvent.GameEnd);
+            return true;
+        }
+
+        return false;
+    }
+
     LeaveRoom(socket_id: string, room_id: string) {
         this.BindToRoom(socket_id, "");
 
         if (this._rooms.has(room_id) && this._sockets.has(socket_id)) {
             let room = this._rooms.get(room_id);
             let socketUser = this._sockets.get(socket_id);
+            let leave_user_array = socketUser.user_id;
 
             //If game not start yet
             if (!room.in_game) {
@@ -160,14 +176,49 @@ export default class SocketEnvironment {
             //Empty room
             if (room.users.length <= 0) {
                 this._rooms.delete(room_id);
+                this._io.to(room_id).emit(UniversalSocketReplyEvent.RoomDelete, JSON.stringify({ room_id: room_id}) );
             } else {
                 //Transfer host to remaining user
                 room.host_id = room.users[0];
                 this._rooms.set(room_id, room);
-
-                this._io.to(room_id).emit(UniversalSocketReplyEvent.RoomLeaved, JSON.stringify({ leave_users: socketUser.user_id, host:room.host_id }) );
+                this._io.to(room_id).emit(UniversalSocketReplyEvent.RoomLeaved, JSON.stringify({ leave_users: leave_user_array, host:room.host_id }) );
             }
         };
+    }
+
+    KickUserFromRoom(room_id: string, user_id: string) {
+        if (this._rooms.has(room_id)) {
+            let room = this._rooms.get(room_id);
+
+            //Game not start yet
+            if (room.in_game) return;
+
+            if (this._sockets.has(user_id)) {
+                this.KickOwnerFromRoom(room, this._sockets.get(user_id));
+                return;
+            }
+
+            let index = room.users.findIndex(x=> x == user_id);
+            
+            //Loop back to find the account owner
+            for (let i = index - 1; i >=0; i--) {
+                if ( this._sockets.has(room.users[i])) {
+                    this.KickOwnerFromRoom(room, this._sockets.get(room.users[i]));
+                    return;
+                }
+            }
+        }
+    }
+
+    KickOwnerFromRoom(room: RoomComponentType, socketComponentType: SocketComponentType) {
+        if (socketComponentType.user_id == null || socketComponentType.user_id.length <= 0) return;
+
+        for (let i = 0; i < socketComponentType.user_id.length; i++) {
+            let r_index = room.users.findIndex(r_user => socketComponentType.user_id[i] == r_user);
+            room.users.splice(r_index, 1);
+        }
+
+        this._io.to(room.room_id).emit(UniversalSocketReplyEvent.RoomKickUser, JSON.stringify({ leave_users: socketComponentType.user_id, owner_id: socketComponentType.user_id[0] }) );
     }
 
     Disconnect(socket_id: string) {
