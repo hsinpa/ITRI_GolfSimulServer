@@ -200,7 +200,7 @@ export default class UserModel {
     async GetAllAvatarURL() {
         let query = `SELECT avatar_url 
                     FROM ${Table}
-                    WHERE avatar_url IS NOT NULL`;
+                    WHERE avatar_url IS NOT NULL AND avatar_url IS NOT ''`;
 
         let r = await(this._database.PrepareAndExecuteQuery(query));
         return JSON.parse(r.result);

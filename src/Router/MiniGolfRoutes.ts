@@ -7,10 +7,10 @@ import {ReplyResult} from './Routes';
 
 export default function set_mini_golf_routes(fastify: FastifyInstance, models: Models) {
 
-    fastify.get('/mini_golf/high_score/:terrain_id', async function (request: any, reply) {
-        const { terrain_id } = request.params;
+    fastify.get('/mini_golf/high_score/:terrain_id/:mode', async function (request: any, reply) {
+        const { terrain_id, mode } = request.params;
 
-        let r = await models.MiniGolfModel.GetHighScore(terrain_id);
+        let r = await models.MiniGolfModel.GetHighScore(terrain_id, mode);
 
         ReplyResult(reply, r, ErrorMessge.Error);
     });
@@ -20,7 +20,8 @@ export default function set_mini_golf_routes(fastify: FastifyInstance, models: M
         await models.MiniGolfModel.SaveGame(
             SafeJSONOps(request.body, "user_id", ""),
             SafeJSONOps(request.body, "terrain_id", ""), 
-            SafeJSONOps(request.body, "score", 0)
+            SafeJSONOps(request.body, "score", 0),
+            SafeJSONOps(request.body, "mode", "normal")
         );
 
         ReplyResult(reply, true, ErrorMessge.Error);

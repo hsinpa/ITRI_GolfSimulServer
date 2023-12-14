@@ -1,6 +1,7 @@
 import Database from './Database';
 
 const Table = "Game";
+const RecordTable = "GameRecord";
 
 export default class GameModel {
 
@@ -32,7 +33,12 @@ export default class GameModel {
 
         let game_result_array = this.TransformGameResult(r.result);
 
-        game_result_array = game_result_array.sort((a, b) => a["total_score"] - b["total_score"]);
+        game_result_array = game_result_array.sort((a, b) => a["total_par"] - b["total_par"]);
+
+        game_result_array = game_result_array.map((x, index) => {
+            x["rank"] = index + 1;
+            return x;
+        });
 
         return game_result_array;
     }
@@ -43,7 +49,19 @@ export default class GameModel {
                 WHERE user_id=? AND mode_type = ?`;
 
         let r = await this._database.PrepareAndExecuteQuery(q, [user_id, mode]);
+
         return this.TransformGameResult(r.result);
+    }
+
+    async SaveGameRecord(new_player_count: number, new_play_time: number) {
+        let get_q = `SELECT user_count, totol_play_time as total_play_time FROM ${RecordTable}`;
+        let get_r = await this._database.PrepareAndExecuteQuery(get_q);
+
+        let user_count : number = get_r.result[0]["user_count"] + new_player_count;
+        let total_play_time : number = get_r.result[0]["total_play_time"] + new_play_time;
+
+        let save_q = `UPDATE ${RecordTable} SET user_count = ${user_count}, totol_play_time = ${total_play_time} FROM ${RecordTable}`;
+        let save_r = await this._database.PrepareAndExecuteQuery(get_q);
     }
 
     private TransformGameResult(raw_array: string) : any[] {
@@ -54,7 +72,7 @@ export default class GameModel {
                 r_json[i].par_score = this.StringToArrayNumber(r_json[i].par_score);
 
                 let score_array : number[] = r_json[i].par_score;
-                r_json[i]["total_score"] = score_array.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+                r_json[i]["total_par"] = score_array.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
             }
     
             return r_json;

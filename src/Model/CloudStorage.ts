@@ -7,6 +7,7 @@ import { dirname, parse, join } from 'path';
 import { v4 as uuidv4 } from 'uuid';
 
 const Table = "GolfFieldScreenshotMap";
+const GoogleStorageTable = "GoogleStorageAssets";
 
 export default class CloudStorageModel {
     private _database : Database;
@@ -57,6 +58,24 @@ export default class CloudStorageModel {
         }
         
         return null;
+    }
+
+    async GetAssetsByTag(tag: string) {
+        let get_query = `SELECT id, url, create_time FROM ${GoogleStorageTable} WHERE tag = ?`;
+
+        let r = await this._database.PrepareAndExecuteQuery(get_query, [tag]);
+        
+        if (r.status) {
+            return JSON.parse( r.result);
+        }
+        
+        return null;
+    }
+
+    async SaveGoogleStorageTable(tag:string, url:string) {
+        let google_storage_sql = `INSERT INTO ${GoogleStorageTable} (tag, url) VALUES(?, ?)`;
+
+        return await this._database.PrepareAndExecuteQuery(google_storage_sql, [tag, url]);
     }
 //#endregion
 

@@ -1,6 +1,6 @@
 import { FastifyInstance, FastifyReply } from "fastify";
 import Models from "../Model/Models";
-import { ErrorMessge } from "../Utility/Flag/TypeFlag";
+import { ErrorMessge, GoogleStorageTag } from "../Utility/Flag/TypeFlag";
 import { SafeJSONOps } from "../Utility/GeneralMethod";
 import { promisify } from "node:util";
 import {createWriteStream} from "fs";
@@ -16,6 +16,13 @@ let configFilename = join(__dirname, "../", "files/introduction-lppbci-ae3a7bc1f
 const storage = new Storage({keyFile: configFilename});
 
 export default function set_io_routes(fastify: FastifyInstance, models: Models) {
+
+    fastify.get('/get_all_asset/:tag', async function (request: any, reply) {
+        const { tag } = request.params;
+
+        let cloud_storage_result = await models.CloudStorage.GetAssetsByTag(tag);
+        ReplyResult(reply, cloud_storage_result, ErrorMessge.Error);
+    });
 
     fastify.get('/get_golf_field_image/:id/:golf_field_id', async function (request: any, reply) {
         const { id, golf_field_id } = request.params;
@@ -36,6 +43,8 @@ export default function set_io_routes(fastify: FastifyInstance, models: Models) 
         let new_file_name = await models.CloudStorage.upload_to_google_cloud_storage(filepath, filename);
         let file_uri = await models.CloudStorage.get_file_uri(new_file_name);
     
+        await models.CloudStorage.SaveGoogleStorageTable(GoogleStorageTag.SCREENSHOT, file_uri);
+
         await models.CloudStorage.SaveFieldScreenShotToDatabase(user_id, golf_field, file_uri);
 
         ReplyResult(reply, file_uri, ErrorMessge.Error);
@@ -52,6 +61,8 @@ export default function set_io_routes(fastify: FastifyInstance, models: Models) 
         let new_file_name = await models.CloudStorage.upload_to_google_cloud_storage(filepath, filename);
         let file_uri = await models.CloudStorage.get_file_uri(new_file_name);
     
+        await models.CloudStorage.SaveGoogleStorageTable(GoogleStorageTag.FBX, file_uri);
+
         await models.UserModel.update_account_fbx(user_id, file_uri);
 
         ReplyResult(reply, file_uri, ErrorMessge.Error);
@@ -65,7 +76,15 @@ export default function set_io_routes(fastify: FastifyInstance, models: Models) 
 
         let new_file_name = await models.CloudStorage.upload_to_google_cloud_storage(filepath, filename);
         let file_uri = await models.CloudStorage.get_file_uri(new_file_name);
-    
+
+        await models.CloudStorage.SaveGoogleStorageTable(GoogleStorageTag.ASSET, file_uri);
+
         ReplyResult(reply, file_uri, ErrorMessge.Error);
+    });
+
+    fastify.post('/remove_avatar_to_cloud_storage', async function (request: any, reply) {
+        let user_id : string = SafeJSONOps(request.body, "user_id", "");
+        await models.UserModel.update_account_fbx(user_id, "")
+        ReplyResult(reply, true, ErrorMessge.Error);
     });
 }

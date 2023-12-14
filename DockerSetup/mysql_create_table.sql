@@ -79,6 +79,21 @@ CREATE TABLE IF NOT EXISTS MiniGolfScore(
     user_id VARCHAR(500) NOT NULL DEFAULT "",
     terrain_id VARCHAR(500) NOT NULL DEFAULT "",
     score int NOT NULL DEFAULT 0,
+    game_mode VARCHAR(50) NOT NULL DEFAULT "normal",
     FOREIGN KEY (user_id)  REFERENCES Account(id),
     create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP    
 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS GoogleStorageAssets(
+	id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    tag VARCHAR(100) NOT NULL DEFAULT "",
+    url VARCHAR(800) NOT NULL DEFAULT "",
+    create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP    
+) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+
+
+CREATE TABLE IF NOT EXISTS GameRecord (
+    user_count INT(200) NOT NULL DEFAULT 0,
+    totol_play_time INT(200) DEFAULT 0
+) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+INSERT INTO `GameRecord` (user_count, totol_play_time) VALUES (0, 0);

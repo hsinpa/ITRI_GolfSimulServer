@@ -3,6 +3,12 @@ export interface DatabaseResultType {
     result? : any
 }
 
+export const GoogleStorageTag = Object.freeze({
+    FBX : "FBX",
+    SCREENSHOT : "SCREENSHOT",
+    ASSET : "ASSET",
+});
+
 export const ErrorMessge = Object.freeze({
     Account_Not_Exist : "Account_Not_Exist",
     Parameter_Wrong_Format : "Parameter_Wrong_Format",
