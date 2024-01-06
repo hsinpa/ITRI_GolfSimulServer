@@ -18,13 +18,15 @@ const fastify = Fastify({
 
 fastify.register(cors, { 
   // put your options here
+  origin: "*",
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
 })
 
 fastify.register(fastifyIO, 
   {
     cors: {
       origin: "*",
-      methods: ["GET", "POST"]
+      methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     }
   });
 
@@ -45,7 +47,7 @@ const socketManager = new SocketManager(fastify);
 const routes = new Routes(fastify, models, socketManager);
   
 // Run the server!
-fastify.listen({ port: 8025 }, function (err, address) {
+fastify.listen({ port: 8025, host:'127.0.0.1' }, function (err, address) {
 if (err) {
     fastify.log.error(err)
     process.exit(1)

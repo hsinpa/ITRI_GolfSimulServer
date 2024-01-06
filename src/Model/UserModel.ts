@@ -147,14 +147,16 @@ export default class UserModel {
     async forget_password(email: string) : Promise<boolean> {
         if (email == "") return false;
 
-        let first_pass_query = `SELECT is_forget_password_mail_send, name
+        let first_pass_query = `SELECT is_forget_password_mail_send, name, id
                     FROM ${Table}
                     WHERE email=?`;
         let first_pass_query_r = await(this._database.PrepareAndExecuteQuery(first_pass_query, [email]));
 
         let json = JSON.parse(first_pass_query_r.result);
         if (json.length > 0 && !json[0]["is_forget_password_mail_send"]) { 
-            let nick_name = json[0]["name"]
+            let nick_name = json[0]["name"];
+            let user_id = json[0]["id"];
+
             let new_password = GenerateRandomString(12);
             let hashPassword = SHA256Hash(new_password+RANDOMKey);
     
@@ -166,7 +168,7 @@ export default class UserModel {
 
             await this._database.PrepareAndExecuteQuery(password_query, [hashPassword, email]);
             
-            send_forget_password_email(email, nick_name, new_password);
+            send_forget_password_email(email, user_id, nick_name, new_password);
 
             return true;
         }
@@ -200,7 +202,7 @@ export default class UserModel {
     async GetAllAvatarURL() {
         let query = `SELECT avatar_url 
                     FROM ${Table}
-                    WHERE avatar_url IS NOT NULL AND avatar_url IS NOT ''`;
+                    WHERE avatar_url IS NOT NULL AND avatar_url != ""`;
 
         let r = await(this._database.PrepareAndExecuteQuery(query));
         return JSON.parse(r.result);

@@ -49,8 +49,22 @@ export default class GameModel {
                 WHERE user_id=? AND mode_type = ?`;
 
         let r = await this._database.PrepareAndExecuteQuery(q, [user_id, mode]);
+        let par_record = this.TransformGameResult(r.result);
+        let p_lens = par_record.length;
 
-        return this.TransformGameResult(r.result);
+        for (let i = 0; i < p_lens; i++) {
+            let session_record = await this.GetGameBySession(par_record[i]["session_id"]);
+            let session_lens = session_record.length;
+
+            for (let k = 0; k < session_lens; k++) {
+                if (session_record[k]["user_id"] == user_id) {
+                    par_record[i]["rank"] = session_record[k]["rank"];
+                    break;
+                }
+            }
+        }
+
+        return par_record;
     }
 
     async SaveGameRecord(new_player_count: number, new_play_time: number) {

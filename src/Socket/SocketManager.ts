@@ -10,9 +10,11 @@ export default class SocketManager {
     public api : SocketAPI;
     private general_listener: SocketGeneralListener;
     
-    constructor(app : FastifyInstance) {
-        app.ready().then(() => {
-            // we need to wait for the server to be ready, else `server.io` is undefined
+    constructor(app : any) {
+
+        app.ready((err: any) => {
+            if (err) throw err;
+
             this.io = app.io;
             this.env = new SocketEnvironment(this.io);
             this.api = new SocketAPI(this.io, this.env);
@@ -24,6 +26,8 @@ export default class SocketManager {
     }
 
     RegisterBasicListener() {
+        console.log("Socket Register Basic Listener");
+
         let self = this;
         this.io.sockets.on('connection', function (socket) {
             console.log(socket.id + " is connect");

@@ -17,9 +17,10 @@ export function send_email(email_title: string, email_body: string, target_email
     });
 }
 
-export function send_forget_password_email(email: string, name: string, password:string) {
+export function send_forget_password_email(email: string, user_id: string, name: string, password:string) {
     let title = "IRIT Title => Forget password";
-    let body = `Hi ${name}\nYou new password ${password}`;
+    let body = `Hi ${name}, check the link below, to reset your password
+                http://web.itrigolfgame.idv.tw/forgotpassword/${user_id}/${password}`;
 
     send_email(title, body, email);
 }

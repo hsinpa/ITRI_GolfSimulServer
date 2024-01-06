@@ -87,4 +87,10 @@ export default function set_io_routes(fastify: FastifyInstance, models: Models) 
         await models.UserModel.update_account_fbx(user_id, "")
         ReplyResult(reply, true, ErrorMessge.Error);
     });
+
+    fastify.post('/remove_asset_to_cloud_storage', async function (request: any, reply) {
+        let asset_id : number = SafeJSONOps(request.body, "asset_id", 0);
+        await models.CloudStorage.DeleteGoogleStorageTable(asset_id);
+        ReplyResult(reply, true, ErrorMessge.Error);
+    });
 }

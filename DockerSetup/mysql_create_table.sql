@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS Account (
     token CHAR(64) NOT NULL,
     height FLOAT(8) NOT NULL DEFAULT 0,
     weight FLOAT(8) NOT NULL DEFAULT 0,
+    birthday varchar(40) NOT NUll,
     nation VARCHAR(150) NOT NULL DEFAULT "Unknown",
     avatar_url VARCHAR(500) NOT NULL DEFAULT "",
     profile_picture_num INT(12) NOT NULL DEFAULT 0,
@@ -32,20 +33,17 @@ CREATE TABLE IF NOT EXISTS SelfGolfField (
     auto_ball_supply BOOLEAN NOT NULL DEFAULT True,
     action_detect_platform BOOLEAN NOT NULL DEFAULT True,
     video_replay BOOLEAN NOT NULL DEFAULT True,
-
     create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS SelfGolfFieldMap (
 	id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
-
     user_id VARCHAR(200) NOT NULL DEFAULT "",
     golf_field_id int NOT NULL DEFAULT 1,
-
+    mode varchar(50) NOT NULL Default 'competetive_mode';
     FOREIGN KEY (user_id)  REFERENCES Account(id),
     FOREIGN KEY (golf_field_id)  REFERENCES SelfGolfField(id),
-
     create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP    
 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 

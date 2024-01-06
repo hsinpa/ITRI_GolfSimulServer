@@ -1,5 +1,3 @@
-import { send_forget_password_email } from '../Utility/EmailUtility';
-import { AccountStruct } from '../Utility/Flag/APIStruct';
 import { GenerateRandomString, SHA256Hash } from '../Utility/GeneralMethod';
 import Database from './Database';
 import { Storage } from '@google-cloud/storage';
@@ -76,6 +74,12 @@ export default class CloudStorageModel {
         let google_storage_sql = `INSERT INTO ${GoogleStorageTable} (tag, url) VALUES(?, ?)`;
 
         return await this._database.PrepareAndExecuteQuery(google_storage_sql, [tag, url]);
+    }
+
+    async DeleteGoogleStorageTable(id:number) {
+        let google_storage_sql = `DELETE FROM ${GoogleStorageTable} WHERE id = ?`;
+
+        return await this._database.PrepareAndExecuteQuery(google_storage_sql, [id]);
     }
 //#endregion
 

@@ -1,6 +1,3 @@
-import { send_forget_password_email } from '../Utility/EmailUtility';
-import { AccountStruct } from '../Utility/Flag/APIStruct';
-import { GenerateRandomString, SHA256Hash } from '../Utility/GeneralMethod';
 import Database from './Database';
 
 const ScoreTable = "MiniGolfScore";
