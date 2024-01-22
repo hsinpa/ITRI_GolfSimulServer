@@ -101,7 +101,7 @@ export default function set_user_routes(fastify: FastifyInstance, models: Models
 
     fastify.post('/change_password', async function (request: any, reply) {
 
-        let new_password = SafeJSONOps(request.body, "new_password", "root")
+        let new_password = SafeJSONOps(request.body, "password", "root")
 
         if (!new_password.match(RegularExpression.Password)) {
             ReplyResult(reply, false, ErrorMessge.Password_Wrong_Format);
@@ -110,9 +110,9 @@ export default function set_user_routes(fastify: FastifyInstance, models: Models
 
         let r = await models.UserModel.change_password(
             SafeJSONOps(request.body, "id", ""), 
-            SafeJSONOps(request.body, "past_password", ""),
+            SafeJSONOps(request.body, "token", ""),
             new_password
-            );
+        );
 
         ReplyResult(reply, (r) ? r : null, ErrorMessge.Password_Not_Fit);
     });

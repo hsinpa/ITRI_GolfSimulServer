@@ -1,3 +1,4 @@
+import { timeStamp } from 'node:console';
 import Database from './Database';
 
 const Table = "Game";
@@ -11,9 +12,21 @@ export default class GameModel {
         this._database = database;
     }
 
-    SaveGame(session_id: string, map_id: string, user_id:string, par_score: number[],
+    async SaveGame(session_id: string, map_id: string, user_id:string, par_score: number[],
              player_count: number, hole_count: number,  mode: string, timestamp: string) {
         let score_str = this.ArrayNumberToString(par_score);
+
+        let select_query = `SELECT id
+                FROM ${Table}
+                WHERE user_id=? AND session_id = ?`;
+
+        let select_result = await this._database.PrepareAndExecuteQuery(select_query, [user_id, session_id]);
+        let select_json = JSON.parse(select_result.result);
+
+        if (select_json.length > 0) {
+            this.UpdateGame(session_id, map_id, user_id, score_str, player_count);
+            return;
+        }
 
         let query = `INSERT INTO ${Table}(session_id, map_id, user_id, par_score, 
                     player_count, hole_count, mode_type, timestamp)
@@ -22,6 +35,16 @@ export default class GameModel {
         this._database.PrepareAndExecuteQuery(query, [session_id, map_id, user_id, score_str,
             player_count, hole_count, mode, timestamp
         ]);
+    }
+
+    UpdateGame(session_id: string, map_id: string, user_id:string, par_score: string, player_count: number) {
+        let update_q = `UPDATE ${Table} SET 
+                        par_score = ?,
+                        player_count = ?,
+                        WHERE session_id = ? AND map_id = ? AND user_id = ?`;
+                        
+        this._database.PrepareAndExecuteQuery(update_q, [par_score,  player_count,  session_id, map_id, user_id]);
+                   
     }
 
     async GetGameBySession(session_id: string) : Promise<any[]> {    
@@ -75,7 +98,7 @@ export default class GameModel {
         let total_play_time : number = get_r.result[0]["total_play_time"] + new_play_time;
 
         let save_q = `UPDATE ${RecordTable} SET user_count = ${user_count}, totol_play_time = ${total_play_time} FROM ${RecordTable}`;
-        let save_r = await this._database.PrepareAndExecuteQuery(get_q);
+        let save_r = await this._database.PrepareAndExecuteQuery(save_q);
     }
 
     private TransformGameResult(raw_array: string) : any[] {

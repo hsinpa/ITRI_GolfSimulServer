@@ -2,6 +2,8 @@ CREATE TABLE IF NOT EXISTS Account (
 	id VARCHAR(200) PRIMARY KEY,
     name NVarchar(100) NOT NULL,
     email NVarchar(100) NOT NULL,
+    forget_password_token VARCHAR(256) NOT NUll,
+    forget_password_expire TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     is_forget_password_mail_send BOOLEAN NOT NULL DEFAULT False,
     password CHAR(64),
     gender INT(1) NOT NULL DEFAULT 0,
@@ -16,9 +18,7 @@ CREATE TABLE IF NOT EXISTS Account (
     create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     UNIQUE (email)
-
 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-
 
 CREATE TABLE IF NOT EXISTS SelfGolfField (
 	id int NOT NULL AUTO_INCREMENT PRIMARY KEY,

@@ -117,27 +117,31 @@ export default class UserModel {
         return {id: id, name: name, token: token };
     }
 
-    async change_password(id: string, past_password: string, new_password: string) : Promise<boolean> {
-        if (id == "" || past_password == "" || new_password == "") return false;
+    async change_password(id: string, token: string, new_password: string) : Promise<boolean> {
+        if (id == "" || token == "" || new_password == "") return false;
 
-        let query = `SELECT id 
+        let query = `SELECT id, forget_password_expire, forget_password_token
                     FROM ${Table}
-                    WHERE id=? AND password=?`;
-        let pass_hashPassword = SHA256Hash(past_password+RANDOMKey);
+                    WHERE id=?`;
 
-        let r = await(this._database.PrepareAndExecuteQuery(query, [id, pass_hashPassword]));
+        let r = await(this._database.PrepareAndExecuteQuery(query, [id]));
 
+        var nodeTime = Date.now();
         let q_json = JSON.parse(r.result);
-        if (q_json.length > 0) {
-            let token = await this.RenewToken(id);
+
+        if (q_json.length > 0 && new Date(q_json[0]["forget_password_expire"]).getTime() >= nodeTime &&
+            q_json[0]["forget_password_token"] == token
+        ) {
             let hashPassword = SHA256Hash(new_password+RANDOMKey);
+            let hashToken = SHA256Hash(RANDOMKey+GenerateRandomString(12));
 
             let update_query = `
                 UPDATE ${Table}
-                SET password=?, is_forget_password_mail_send = False
-                WHERE id=?       
+                SET password=?, forget_password_token=?, forget_password_expire=now()
+                WHERE id=?     
             `;
-            await this._database.PrepareAndExecuteQuery(update_query, [hashPassword, id]);
+
+            await this._database.PrepareAndExecuteQuery(update_query, [hashPassword, hashToken, id]);
             return true;
         };
 
@@ -147,28 +151,29 @@ export default class UserModel {
     async forget_password(email: string) : Promise<boolean> {
         if (email == "") return false;
 
-        let first_pass_query = `SELECT is_forget_password_mail_send, name, id
+        let first_pass_query = `SELECT name, id, forget_password_expire
                     FROM ${Table}
                     WHERE email=?`;
         let first_pass_query_r = await(this._database.PrepareAndExecuteQuery(first_pass_query, [email]));
 
         let json = JSON.parse(first_pass_query_r.result);
-        if (json.length > 0 && !json[0]["is_forget_password_mail_send"]) { 
+
+        var nodeTime = Date.now();
+        if (json.length > 0 && new Date(json[0]["forget_password_expire"]).getTime() <= nodeTime) { 
             let nick_name = json[0]["name"];
             let user_id = json[0]["id"];
 
-            let new_password = GenerateRandomString(12);
-            let hashPassword = SHA256Hash(new_password+RANDOMKey);
+            let hashToken = SHA256Hash(GenerateRandomString(12)+RANDOMKey);
     
             let password_query = `UPDATE ${Table} 
             SET 
-                password = ?, is_forget_password_mail_send = True
+                forget_password_token = ?, forget_password_expire = date_add(now(),interval 1 day)
             WHERE
                 email = ?;`;
 
-            await this._database.PrepareAndExecuteQuery(password_query, [hashPassword, email]);
+            await this._database.PrepareAndExecuteQuery(password_query, [hashToken, email]);
             
-            send_forget_password_email(email, user_id, nick_name, new_password);
+            send_forget_password_email(email, user_id, nick_name, hashToken);
 
             return true;
         }
