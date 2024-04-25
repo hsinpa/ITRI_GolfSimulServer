@@ -75,9 +75,9 @@ export default class UserModel {
         let token = SHA256Hash(Date.now().toString());
 
         if (!isAccountValid) {
-                let query = `INSERT INTO ${Table}(id, email, name, password, gender, token)
-                VALUES(?,?,?, ?,?,?)`;
-                await(this._database.PrepareAndExecuteQuery(query, [id, email, name, hashPassword, gender, token]));
+                let query = `INSERT INTO ${Table}(id, email, name, password, gender, token, forget_password_token)
+                VALUES(?,?,?,?, ?,?,?)`;
+                await(this._database.PrepareAndExecuteQuery(query, [id, email, name, hashPassword, gender, token, token]));
         }
 
         return !isAccountValid;
